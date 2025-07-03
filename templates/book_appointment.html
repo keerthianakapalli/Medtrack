@@ -1,0 +1,94 @@
+<!-- book_appointment.html -->
+ <style>
+ /* General container styling */
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #f9f9f9;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Heading */
+.container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #1d2d74;
+}
+
+/* Label styling */
+form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Input and select styling */
+form input[type="date"],
+form input[type="time"],
+form select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.3s;
+}
+
+form input:focus,
+form select:focus {
+  border-color: #3c90a3;
+  outline: none;
+}
+
+/* Button styling */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 25px;
+  background-color: #1d2d74;
+  color: #fff;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #3c90a3;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% extends "base.html" %}
+{% block title %}Book Appointment{% endblock %}
+{% block content %}
+  <div class="container">
+    <h2>Book Appointment</h2>
+    <form method="POST">
+      <label for="doctor_email">Select Doctor:</label>
+      <select name="doctor_email" id="doctor_email" required>
+        {% for email, name in doctors %}
+          <option value="{{ email }}">Dr. {{ name }}</option>
+        {% endfor %}
+      </select>
+      <label for="date">Date:</label>
+      <input type="date" name="date" id="date" required>
+      <label for="time">Time:</label>
+      <input type="time" name="time" id="time" required>
+      <button type="submit" class="btn">Book</button>
+    </form>
+  </div>
+{% endblock %}

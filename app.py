@@ -1,4 +1,3 @@
-print("Starting Flask App...")
 
 from flask import Flask, request, jsonify, session, render_template, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -53,17 +52,6 @@ PATIENTS_TABLE_NAME = os.environ.get('PATIENTS_TABLE_NAME', 'MedTrackPatients')
 APPOINTMENTS_TABLE_NAME = os.environ.get('APPOINTMENTS_TABLE_NAME', 'MedTrackAppointments')
 DIAGNOSIS_TABLE_NAME = os.environ.get('DIAGNOSIS_TABLE_NAME', 'MedTrackDiagnosis')
 NOTIFICATIONS_TABLE_NAME = os.environ.get('NOTIFICATIONS_TABLE_NAME', 'MedTrackNotifications')
-#what each table contains
-# ---------------------------------------------------------------------------------------------------------------
-#| Table Name              | Key Fields (Based on ER Diagram)                                                    |
-#| ----------------------- | ----------------------------------------------------------------------------------- |
-#| `MedTrackUsers`         | `UserID (PK)`, `Name`, `Email`, `Role (doctor/patient)`, `Password`, `Phone`        |
-#| `MedTrackDoctors`       | `DoctorID (PK)`, `UserID (FK)`, `Specialization`, `Experience`                      |
-#| `MedTrackPatients`      | `PatientID (PK)`, `UserID (FK)`, `Age`, `MedicalHistory`                            |
-#| `MedTrackAppointments`  | `AppointmentID (PK)`, `PatientID (FK)`, `DoctorID (FK)`, `Date`, `Time`, `Status`   |
-#| `MedTrackDiagnosis`     | `DiagnosisID (PK)`, `AppointmentID (FK)`, `DoctorID`, `PatientID`, `Report`, `Date` |
-#| `MedTrackNotifications` | `NotificationID (PK)`, `UserID (FK)`, `Message`, `Timestamp`                        |
-# ---------------------------------------------------------------------------------------------------------------
 
 
 # SNS Configuration

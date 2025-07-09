@@ -1,0 +1,2708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrack - Doctor Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --secondary-dark: #27ae60;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --darker: #2c3e50;
+            --gray: #95a5a6;
+            --light-gray: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: cornsilk;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color:rgb(25, 52, 100);;
+            color: var(--white);
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item.active {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--primary);
+        }
+
+        .menu-item i {
+            width: 30px;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .menu-item span {
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .logout-btn {
+            margin-top: 15px;
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--accent);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .topbar {
+            background-color: var(--white);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+            display: none;
+        }
+
+        .search-bar {
+            flex: 1;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px 15px;
+            padding-left: 40px;
+            border: 1px solid #eee;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--dark);
+            margin-left: 15px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Dashboard Content */
+        .dashboard-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .dashboard-subtitle {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2rem;
+            color: rgba(52, 152, 219, 0.1);
+            transition: var(--transition);
+        }
+
+        .dashboard-card:hover .card-icon {
+            transform: scale(1.2);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .card-subtitle {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            overflow-x: auto;
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .section-action {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .section-action i {
+            margin-right: 8px;
+        }
+
+        .section-action:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Patient List */
+        .patient-list {
+            margin-top: 20px;
+        }
+
+        .patient-item {
+            display: flex;
+            align-items: center;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .patient-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+
+        .patient-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .patient-info {
+            flex-grow: 1;
+        }
+
+        .patient-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .patient-details {
+            display: flex;
+            color: var(--gray);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .patient-details span {
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .patient-details i {
+            margin-right: 5px;
+        }
+
+        .patient-actions {
+            display: flex;
+        }
+
+        .patient-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .patient-btn:hover {
+            color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        /* Appointments */
+        .appointment-list {
+            margin-top: 20px;
+        }
+
+        .appointment-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: var(--white);
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .appointment-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .appointment-color {
+            width: 10px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        .appointment-details {
+            flex-grow: 1;
+        }
+
+        .appointment-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .appointment-info {
+            display: flex;
+            color: var(--gray);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .appointment-info span {
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .appointment-info i {
+            margin-right: 5px;
+        }
+
+        .appointment-actions {
+            display: flex;
+        }
+
+        .appointment-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .appointment-btn:hover {
+            color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        /* Video Conference */
+        .video-call-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .video-call-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-call-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-call-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .video-call-title {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .video-call-title i {
+            margin-right: 10px;
+        }
+
+        .video-call-status {
+            background-color: var(--white);
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .video-call-content {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .video-call-patient {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .video-call-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .video-call-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-call-patient-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .video-call-patient-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .video-call-details {
+            margin-top: 15px;
+        }
+
+        .video-call-detail-item {
+            display: flex;
+            margin-bottom: 10px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .video-call-detail-item i {
+            width: 20px;
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .video-call-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .video-call-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .video-call-btn i {
+            margin-right: 8px;
+        }
+
+        .video-call-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .video-call-btn.secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .video-call-btn.secondary:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        /* Prescriptions */
+        .prescription-form {
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn-cancel {
+            background-color: #eee;
+            color: var(--gray);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-cancel:hover {
+            background-color: #ddd;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Medication List */
+        .medication-list {
+            margin-top: 20px;
+        }
+
+        .medication-item {
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .medication-name {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .medication-dosage {
+            color: var(--gray);
+        }
+
+        .medication-actions button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+
+        .medication-actions button:hover {
+            color: var(--primary-dark);
+        }
+
+        .add-medication {
+            display: flex;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .add-medication input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 0.9rem;
+        }
+
+        .add-medication input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .add-medication button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-medication button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Calendar */
+        .calendar {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .calendar-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .calendar-nav {
+            display: flex;
+        }
+
+        .calendar-nav button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            transition: var(--transition);
+        }
+
+        .calendar-nav button:hover {
+            transform: scale(1.1);
+        }
+
+        .calendar-grid {
+            padding: 20px;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 500;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .day:hover {
+            background-color: #f0f0f0;
+        }
+
+        .day.today {
+            background-color: var(--light);
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            width: 5px;
+            height: 5px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        .day.other-month {
+            color: #ccc;
+        }
+
+        /* Messages Panel */
+        .messages-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages-panel.active {
+            right: 0;
+        }
+
+        .messages-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .messages-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .close-messages {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-messages:hover {
+            color: var(--accent);
+        }
+
+        .messages-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message-item {
+            padding: 15px;
+            border-radius: 10px;
+            background-color: var(--light-gray);
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .message-item:hover {
+            background-color: #eee;
+        }
+
+        .message-item.unread {
+            border-left: 3px solid var(--primary);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .message-sender {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .message-preview {
+            color: var(--gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-compose {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .compose-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .compose-btn i {
+            margin-right: 10px;
+        }
+
+        .compose-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Notifications Panel */
+        .notifications-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notifications-panel.active {
+            right: 0;
+        }
+
+        .notifications-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notifications-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .close-notifications {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-notifications:hover {
+            color: var(--accent);
+        }
+
+        .notifications-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-radius: 10px;
+            background-color: var(--light-gray);
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .notification-item:hover {
+            background-color: #eee;
+        }
+
+        .notification-item.unread {
+            border-left: 3px solid var(--primary);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(52, 152, 219, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .notification-text {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .clear-all {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .clear-all-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--light-gray);
+            color: var(--dark);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .clear-all-btn:hover {
+            background-color: #eee;
+        }
+
+        /* Analytics Section */
+        .analytics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .chart-period {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .chart-stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .chart-stat {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+       
+       
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            overflow: auto;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: slideInDown 0.5s;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #aaa;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--dark);
+            transform: rotate(90deg);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        /* Video Call Modal */
+        .video-call-container {
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16 / 9;
+            margin-bottom: 20px;
+        }
+
+        .video-main {
+            width: 100%;
+            height: 100%;
+            background-color: #222;
+            background-image: url('https://randomuser.me/api/portraits/men/32.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .video-self {
+            position: absolute;
+            width: 150px;
+            height: 100px;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #444;
+            background-image: url('https://randomuser.me/api/portraits/women/65.jpg');
+            background-size: cover;
+            background-position: center;
+            border: 2px solid var(--white);
+        }
+
+        .call-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .call-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .btn-mic {
+            background-color: var(--white);
+            color: var(--dark);
+        }
+
+        .btn-mic.muted {
+            background-color: #eee;
+            color: var(--accent);
+        }
+
+        .btn-video {
+            background-color: var(--white);
+            color: var(--dark);
+        }
+
+        .btn-video.off {
+            background-color: #eee;
+            color: var(--accent);
+        }
+
+        .btn-end-call {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-end-call:hover {
+            background-color: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .call-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow-x: hidden;
+            }
+
+            .sidebar.expanded {
+                width: 260px;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .sidebar.expanded .logo span {
+                display: block;
+            }
+
+            .menu-item span {
+                display: none;
+            }
+
+            .sidebar.expanded .menu-item span {
+                display: block;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .sidebar.expanded .sidebar-footer {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .main-content.expanded {
+                margin-left: 260px;
+            }
+
+            .toggle-sidebar {
+                display: block;
+            }
+
+            .messages-panel,
+            .notifications-panel {
+                width: 350px;
+            }
+
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+            }
+
+            .sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+
+            .sidebar .logo span {
+                display: block;
+            }
+
+            .sidebar .menu-item span {
+                display: block;
+            }
+
+            .sidebar-footer {
+                display: block;
+            }
+
+            .topbar {
+                padding: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .video-call-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .patient-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .patient-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .patient-details {
+                justify-content: center;
+            }
+
+            .patient-actions {
+                margin-top: 15px;
+            }
+
+            .messages-panel,
+            .notifications-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>MedTrack</span>
+                </a>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="menu-item" data-section="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="menu-item" data-section="patients">
+                        <i class="fas fa-user-injured"></i>
+                        <span>Patients</span>
+                    </li>
+                    <li class="menu-item" data-section="appointments">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Appointments</span>
+                    </li>
+               
+                    <li class="menu-item" data-section="prescriptions">
+                        <i class="fas fa-file-prescription"></i>
+                        <span>Prescriptions</span>
+                    </li>
+                    <li class="menu-item" data-section="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </li>
+              
+                    
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Doctor Avatar">
+                    </div>
+                    <div>
+                        <div class="user-name">Dr. {{ name }}</div>
+                        <div class="user-role">{{ specialization }}</div>
+                    </div>
+                </div>
+             <button class="logout-btn" id="logout-btn">
+    <i class="fas fa-sign-out-alt"></i> Logout
+</button>
+
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <!-- Topbar -->
+            <div class="topbar">
+                <button class="toggle-sidebar" id="toggle-sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search patients...">
+                </div>
+                <div class="topbar-actions">
+                    <button class="action-btn" id="notifications-btn">
+                        <i class="far fa-bell"></i>
+                        <span class="notification-badge">{{ notifications_count or 0 }}</span>
+                    </button>
+                    <button class="action-btn" id="messages-btn">
+                        <i class="far fa-envelope"></i>
+                        <span class="notification-badge">{{ messages_count or 0 }}</span>
+                    </button>
+                    <button class="action-btn" id="help-btn">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section-container">
+                <h1 class="dashboard-title">Doctor Dashboard</h1>
+                <p class="dashboard-subtitle">Welcome back, Dr. {{ name }}. Here's your practice overview.</p>
+
+                <!-- Dashboard Cards -->
+
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-user-injured"></i>
+                        </div>
+                        <h3 class="card-title">Total Patients</h3>
+                        <div class="card-value">{{ total_patients }}</div>
+                        <p class="card-subtitle">
+                            {% if patients_new_this_month is defined %}
+                            +{{ patients_new_this_month }} this month
+                            {% else %}
+                            +0 this month
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="card-title">Today's Appointments</h3>
+                        <div class="card-value">{{ todays_appointments }}</div>
+                        <p class="card-subtitle">
+                            {% if next_appointment %}
+                            Next: {{ next_appointment.patient }} at {{ next_appointment.time }}
+                            {% else %}
+                            No appointments today
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3 class="card-title">Video Consultations</h3>
+                        <div class="card-value">{{ video_consultations }}</div>
+                        <p class="card-subtitle">
+                            {% if next_video_consult %}
+                            Next: {{ next_video_consult.time }} with {{ next_video_consult.patient }}
+                            {% else %}
+                            No video consults today
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-file-prescription"></i>
+                        </div>
+                        <h3 class="card-title">Prescriptions</h3>
+                        <div class="card-value">{{ prescriptions }}</div>
+                        <p class="card-subtitle">
+                            {% if prescriptions_issued_this_week is defined %}
+                            {{ prescriptions_issued_this_week }} issued this week
+                            {% else %}
+                            Issued this week
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Activity</h2>
+                        <button class="section-action">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+
+                    <div class="appointment-list">
+                        {% for appt in appointments %}
+                        <div class="appointment-item">
+                            <div class="appointment-color"></div>
+                            <div class="appointment-details">
+                                <h3 class="appointment-title">{{ appt.title }}</h3>
+                                <div class="appointment-info">
+                                    <span><i class="fas fa-clock"></i> {{ appt.time }}</span>
+                                    {% if appt.reason %}
+                                    <span><i class="fas fa-stethoscope"></i> {{ appt.reason }}</span>
+                                    {% endif %}
+                                    <span><i class="fas fa-user"></i> {{ appt.patient }}</span>
+                                </div>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="appointment-btn" title="Start Video Call">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                                <button class="appointment-btn" title="View Patient">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div>No recent appointments.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Patients Section -->
+            <section id="patients-section" class="content-section-container" style="display: none;">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Your Patients</h2>
+                        <button class="section-action" id="add-patient-btn">
+                            <i class="fas fa-plus"></i> Add Patient
+                        </button>
+                    </div>
+
+                    <div class="patient-list">
+                        {% for patient in patients %}
+                        <div class="patient-item">
+                            <div class="patient-avatar">
+                                <img src="{{ patient.avatar_url or 'https://randomuser.me/api/portraits/men/32.jpg' }}"
+                                    alt="{{ patient.name }}">
+                            </div>
+                            <div class="patient-info">
+                                <h3 class="patient-name">{{ patient.name }}</h3>
+                                <div class="patient-details">
+                                    {% if patient.age %}
+                                    <span><i class="fas fa-birthday-cake"></i> {{ patient.age }} years</span>
+                                    {% endif %}
+                                    {% if patient.gender %}
+                                    <span><i class="fas fa-venus-mars"></i> {{ patient.gender }}</span>
+                                    {% endif %}
+                                    {% if patient.phone %}
+                                    <span><i class="fas fa-phone"></i> {{ patient.phone }}</span>
+                                    {% endif %}
+                                    {% if patient.last_visit %}
+                                    <span><i class="fas fa-calendar-day"></i> Last Visit: {{ patient.last_visit
+                                        }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="patient-actions">
+                                <button class="patient-btn" title="View Profile">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                                <button class="patient-btn" title="Medical Records">
+                                    <i class="fas fa-file-medical"></i>
+                                </button>
+                                <button class="patient-btn" title="Send Message">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="patient-btn" title="Video Call">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div>No patients assigned yet.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Appointments Section -->
+            <section id="appointments-section" class="content-section-container" style="display: none;">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Upcoming Appointments</h2>
+                        <button class="section-action">
+                            <i class="fas fa-plus"></i> Schedule Appointment
+                        </button>
+                    </div>
+
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-title">June 2025</div>
+                            <div class="calendar-nav">
+                                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="weekdays">
+                                <div>Sun</div>
+                                <div>Mon</div>
+                                <div>Tue</div>
+                                <div>Wed</div>
+                                <div>Thu</div>
+                                <div>Fri</div>
+                                <div>Sat</div>
+                            </div>
+                            <div class="days" id="calendar-days">
+                                <!-- Calendar days will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 20px; margin-bottom: 15px;">Today's Schedule</h3>
+                    <div class="appointment-list">
+                        {% for appt in todays_appointments_list %}
+                        <div class="appointment-item">
+                            <div class="appointment-color">
+                            </div>
+                            <div class="appointment-details">
+                                <h3 class="appointment-title">{{ appt.title }}</h3>
+                                <div class="appointment-info">
+                                    <span><i class="fas fa-clock"></i> {{ appt.time }}</span>
+                                    <span><i class="fas fa-user"></i> {{ appt.patient }}</span>
+                                    {% if appt.reason %}
+                                    <span><i class="fas fa-stethoscope"></i> {{ appt.reason }}</span>
+                                    {% endif %}
+                                    {% if appt.location %}
+                                    <span><i class="fas fa-map-marker-alt"></i> {{ appt.location }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="appointment-btn" title="Start Video Call">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                                <button class="appointment-btn" title="View Patient">
+                                    <i class="fas fa-user"></i>
+                                </button>
+                                <button class="appointment-btn" title="Reschedule">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="appointment-btn" title="Cancel">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div>No appointments scheduled for today.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Consultations Section -->
+            <section id="video-consult-section" class="content-section-container" style="display: none;">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Video Consultations</h2>
+                    </div>
+
+                    <div class="video-call-grid">
+                        {% for consult in video_consultations_list %}
+                        <div class="video-call-card">
+                            <div class="video-call-header">
+                                <div class="video-call-title">
+                                    <i class="fas fa-video"></i> {{ consult.title }}
+                                </div>
+                                <div class="video-call-status">{{ consult.status }}</div>
+                            </div>
+                            <div class="video-call-content">
+                                <div class="video-call-patient">
+                                    <div class="video-call-avatar">
+                                        <img src="{{ consult.patient_avatar }}" alt="{{ consult.patient_name }}">
+                                    </div>
+                                    <div class="video-call-patient-info">
+                                        <h3>{{ consult.patient_name }}</h3>
+                                        <p>{{ consult.reason }}</p>
+                                    </div>
+                                </div>
+                                <div class="video-call-details">
+                                    <div class="video-call-detail-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span>{{ consult.date }}</span>
+                                    </div>
+                                    <div class="video-call-detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>{{ consult.time_range }}</span>
+                                    </div>
+                                    {% if consult.notes %}
+                                    <div class="video-call-detail-item">
+                                        <i class="fas fa-notes-medical"></i>
+                                        <span>{{ consult.notes }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="video-call-footer">
+                                <button class="video-call-btn secondary">
+                                    <i class="fas fa-file-medical"></i> Patient Records
+                                </button>
+                                <button class="video-call-btn">
+                                    <i class="fas fa-video"></i> Start Call
+                                </button>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div>No video consultations scheduled for today.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prescriptions Section -->
+            <section id="prescriptions-section" class="content-section-container" style="display: none;">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Create Prescription</h2>
+                    </div>
+                       <form class="prescription-form" method="POST" action="{{ url_for('create_prescription') }}">
+    <div class="form-row">
+      <div class="form-group">
+    <label class="form-label">Patient Email</label>
+    <input type="email" class="form-control" name="patient" placeholder="Enter patient email" required>
+</div>
+
+
+        <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="date" value="{{ current_date }}" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Diagnosis</label>
+        <input type="text" class="form-control" name="diagnosis" required>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-control" name="notes" rows="3"></textarea>
+    </div>
+
+    <!-- For now: simple single medication fields -->
+   <div class="form-group add-medication">
+    <label class="form-label">Add Medication</label>
+    <div class="medication-input">
+        <input type="text" placeholder="e.g., Paracetamol 500mg" />
+        <button type="button">Add</button>
+    </div>
+</div>
+
+<div class="medication-list"></div>
+
+<!-- Hidden field to store structured medications -->
+<input type="hidden" name="medications_json" id="medications_json" />
+
+
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Prescriptions</h2>
+                    </div>
+
+                    <div class="prescription-list">
+                        {% for prescription in prescriptions_list %}
+                        <div class="prescription-item">
+                            <div class="prescription-header">
+                                <div class="prescription-info">
+                                    <h3>{{ prescription.title }}</h3>
+                                    <div class="prescription-date">
+                                        <i class="far fa-calendar-alt"></i> Issued: {{ prescription.issued_date }}
+                                    </div>
+                                </div>
+                                <div class="prescription-doctor">
+                                    <i class="fas fa-user"></i> {{ prescription.patient_name }}
+                                </div>
+                            </div>
+                            <div class="prescription-content">
+                                <p>{{ prescription.description }}</p>
+                                <div class="prescription-meds">
+                                    {% for med in prescription.medications %}
+                                    <div class="med-item">
+                                        <div class="med-name">{{ med.name }}</div>
+                                        <div class="med-dosage">{{ med.dosage }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="prescription-footer">
+                                <span class="prescription-status status-active">{{ prescription.status }}</span>
+                                <div class="prescription-actions">
+                                    <button class="prescription-btn">
+                                        <i class="fas fa-print"></i> Print
+                                    </button>
+                                    <button class="prescription-btn">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div>No recent prescriptions.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics-section" class="content-section-container" style="display: none;">
+                <h1 class="dashboard-title">Analytics & Reports</h1>
+                <p class="dashboard-subtitle">Track your practice performance and patient metrics.</p>
+
+                <div class="analytics-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Patient Visits</h3>
+                            <div class="chart-period">Last 6 months</div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-placeholder">
+                                Patient visits chart will be displayed here
+                            </div>
+                        </div>
+                        <div class="chart-stats">
+                            <div class="chart-stat">
+                                <div class="stat-value">{{ analytics.patient_visits.total }}</div>
+                                <div class="stat-label">Total Patients</div>
+                            </div>
+                            <div class="chart-stat">
+                                <div class="stat-value">{{ analytics.patient_visits.new }}</div>
+                                <div class="stat-label">New Patients</div>
+                            </div>
+                            <div class="chart-stat">
+                                <div class="stat-value">{{ analytics.patient_visits.avg_daily }}</div>
+                                <div class="stat-label">Avg Daily Visits</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Appointment Types</h3>
+                            <div class="chart-period">Current Month</div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-placeholder">
+                                Appointment types pie chart will be displayed here
+                            </div>
+                        </div>
+                        <div class="chart-stats">
+                            {% for t in analytics.appointment_types %}
+                            <div class="chart-stat">
+                                <div class="stat-value">{{ t.value }}%</div>
+                                <div class="stat-label">{{ t.label }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Performance Metrics</h2>
+                        <button class="section-action">
+                            <i class="fas fa-download"></i> Export Report
+                        </button>
+                    </div>
+
+                    <div class="analytics-container">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Patient Satisfaction</h3>
+                            </div>
+                            <div class="chart-container">
+                                <div class="chart-placeholder">
+                                    Patient satisfaction: <strong>{{ analytics.patient_satisfaction }}%</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Treatment Outcomes</h3>
+                            </div>
+                            <div class="chart-container">
+                                <div class="chart-placeholder">
+                                    Treatment outcomes: <strong>{{ analytics.treatment_outcomes }}%</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        
+
+           
+
+    <!-- Messages Panel -->
+    <div class="messages-panel" id="messages-panel">
+        <div class="messages-header">
+            <h3 class="messages-title">Messages</h3>
+            <button class="close-messages" id="close-messages">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="messages-list">
+            {% for msg in messages %}
+            <div class="message-item{% if msg.unread %} unread{% endif %}">
+                <div class="message-header">
+                    <div class="message-sender">{{ msg.sender }}</div>
+                    <div class="message-time">{{ msg.time }}</div>
+                </div>
+                <div class="message-preview">
+                    {{ msg.preview }}
+                </div>
+            </div>
+            {% else %}
+            <div>No messages.</div>
+            {% endfor %}
+        </div>
+        <div class="message-compose">
+            <button class="compose-btn">
+                <i class="fas fa-pen"></i> New Message
+            </button>
+        </div>
+    </div>
+
+    <!-- Notifications Panel -->
+    <div class="notifications-panel" id="notifications-panel">
+        <div class="notifications-header">
+            <h3 class="notifications-title">Notifications</h3>
+            <button class="close-notifications" id="close-notifications">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notifications-list">
+            {% for n in notifications %}
+            <div class="notification-item{% if n.unread %} unread{% endif %}">
+                <div class="notification-icon">
+                    <i class="fas {{ n.icon }}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">{{ n.title }}</div>
+                    <div class="notification-text">{{ n.text }}</div>
+                    <div class="notification-time">{{ n.time }}</div>
+                </div>
+            </div>
+            {% else %}
+            <div>No notifications.</div>
+            {% endfor %}
+        </div>
+        <div class="clear-all">
+            <button class="clear-all-btn">
+                Clear All Notifications
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Call Modal -->
+    <div class="modal" id="video-call-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-video-call">&times;</span>
+            <h2 class="modal-title">
+                Video Call with <span id="patient-name">{{ video_call_patient_name or 'Patient' }}</span>
+            </h2>
+            <div class="video-call-container">
+                <div class="video-main"></div>
+                <div class="video-self"></div>
+            </div>
+
+            <div class="call-controls">
+                <button class="call-btn btn-mic">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="call-btn btn-video">
+                    <i class="fas fa-video"></i>
+                </button>
+                <button class="call-btn btn-end-call">
+                    <i class="fas fa-phone-slash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Add Patient Modal -->
+    <div class="modal" id="add-patient-modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" id="close-add-patient-modal">&times;</span>
+            <h2 class="modal-title">Add Patient</h2>
+            <form method="POST" action="/add_patient">
+                <div>
+                    <label for="patient_email">Patient Email:</label>
+                    <input type="email" name="patient_email" id="patient_email" required>
+                </div>
+                <div>
+                    <label for="patient_name">Patient Name:</label>
+                    <input type="text" name="patient_name" id="patient_name" required>
+                </div>
+                <!-- Add more fields as needed -->
+                <button type="submit" class="refill-btn">Add Patient</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const contentSections = document.querySelectorAll('.content-section-container');
+        const startCallBtns = document.querySelectorAll('[id^="start-call-"]');
+        const videoCallModal = document.getElementById('video-call-modal');
+        const closeVideoCallBtn = document.getElementById('close-video-call');
+        const patientNameSpan = document.getElementById('patient-name');
+        const micBtn = document.querySelector('.btn-mic');
+        const videoBtn = document.querySelector('.btn-video');
+        const endCallBtn = document.querySelector('.btn-end-call');
+        const calendarDays = document.getElementById('calendar-days');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+        const messagesBtn = document.getElementById('messages-btn');
+        const messagesPanel = document.getElementById('messages-panel');
+        const closeMessagesBtn = document.getElementById('close-messages');
+        const notificationsBtn = document.getElementById('notifications-btn');
+        const notificationsPanel = document.getElementById('notifications-panel');
+        const closeNotificationsBtn = document.getElementById('close-notifications');
+        const helpBtn = document.getElementById('help-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        showNotification('Logging out...');
+        // Optional: delay for showing toast before redirecting
+        setTimeout(() => {
+            window.location.href = '/logout';
+        }, 800);
+    });
+}
+
+
+        // Toggle sidebar
+        toggleSidebarBtn.addEventListener('click', () => {
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('mobile-visible');
+            } else {
+                sidebar.classList.toggle('expanded');
+                mainContent.classList.toggle('expanded');
+            }
+        });
+
+        // Menu item click - Show corresponding section
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionName = item.getAttribute('data-section');
+
+                // Update active menu item
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Show corresponding section
+                contentSections.forEach(section => {
+                    section.style.display = 'none';
+                });
+                document.getElementById(`${sectionName}-section`).style.display = 'block';
+
+                // Show notification
+                showNotification(`Switched to ${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)} section`);
+
+                // Close mobile sidebar if open
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('mobile-visible');
+                }
+            });
+        });
+
+        // Start video call buttons
+        startCallBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                videoCallModal.style.display = 'block';
+
+                // Get patient name based on which button was clicked
+                const callId = btn.id.split('-')[2];
+                let patientName = "Patient";
+
+                if (callId === "1") patientName = "John Doe";
+                if (callId === "2") patientName = "Sarah Johnson";
+                if (callId === "3") patientName = "Robert Williams";
+
+                patientNameSpan.textContent = patientName;
+                showNotification(`Video call started with ${patientName}`);
+            });
+        });
+
+        // Close video call modal
+        closeVideoCallBtn.addEventListener('click', () => {
+            videoCallModal.style.display = 'none';
+            showNotification('Video call ended');
+        });
+
+        // Call controls
+        micBtn.addEventListener('click', () => {
+            micBtn.classList.toggle('muted');
+            if (micBtn.classList.contains('muted')) {
+                micBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                showNotification('Microphone muted');
+            } else {
+                micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                showNotification('Microphone unmuted');
+            }
+        });
+
+        videoBtn.addEventListener('click', () => {
+            videoBtn.classList.toggle('off');
+            if (videoBtn.classList.contains('off')) {
+                videoBtn.innerHTML = '<i class="fas fa-video-slash"></i>';
+                showNotification('Camera turned off');
+            } else {
+                videoBtn.innerHTML = '<i class="fas fa-video"></i>';
+                showNotification('Camera turned on');
+            }
+        });
+
+        endCallBtn.addEventListener('click', () => {
+            videoCallModal.style.display = 'none';
+            showNotification('Video call ended');
+        });
+
+        // Messages panel
+        messagesBtn.addEventListener('click', () => {
+            messagesPanel.classList.add('active');
+            showNotification('Messages panel opened');
+            // Reset notification badge
+            messagesBtn.querySelector('.notification-badge').textContent = '0';
+        });
+
+        closeMessagesBtn.addEventListener('click', () => {
+            messagesPanel.classList.remove('active');
+        });
+
+        // Notifications panel
+        notificationsBtn.addEventListener('click', () => {
+            notificationsPanel.classList.add('active');
+            showNotification('Notifications panel opened');
+            // Reset notification badge
+            notificationsBtn.querySelector('.notification-badge').textContent = '0';
+        });
+
+        closeNotificationsBtn.addEventListener('click', () => {
+            notificationsPanel.classList.remove('active');
+        });
+
+        // Help button
+        helpBtn.addEventListener('click', () => {
+            showNotification('Help documentation will open in a new tab', 'info');
+            // In a real application, this would open help documentation
+        });
+
+        // Calendar functionality
+        function renderCalendar() {
+            const date = new Date(2025, 5, 22); // June 22, 2025
+            const year = date.getFullYear();
+            const month = date.getMonth();
+
+            // Get first day of month and last day of month
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            // Get day of week for first day (0 = Sunday, 6 = Saturday)
+            const firstDayOfWeek = firstDay.getDay();
+
+            // Clear previous calendar days
+            calendarDays.innerHTML = '';
+
+            // Add days from previous month
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'day other-month';
+                day.textContent = prevMonthLastDay - i;
+                calendarDays.appendChild(day);
+            }
+
+            // Add days of current month
+            const today = new Date(2025, 5, 22); // June 22, 2025 (current day)
+
+            // Sample appointments data
+            const appointments = [
+                { date: new Date(2025, 5, 22) }, // June 22
+                { date: new Date(2025, 5, 25) }, // June 25
+                { date: new Date(2025, 5, 28) }, // June 28
+                { date: new Date(2025, 5, 30) }  // June 30
+            ];
+
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const day = document.createElement('div');
+                day.className = 'day';
+                day.textContent = i;
+
+                const currentDate = new Date(year, month, i);
+
+                // Check if this day is today
+                if (currentDate.getDate() === today.getDate() &&
+                    currentDate.getMonth() === today.getMonth() &&
+                    currentDate.getFullYear() === today.getFullYear()) {
+                    day.classList.add('today');
+                }
+
+                // Check if this day has appointments
+                const hasAppointment = appointments.some(appt =>
+                    appt.date.getDate() === currentDate.getDate() &&
+                    appt.date.getMonth() === currentDate.getMonth() &&
+                    appt.date.getFullYear() === currentDate.getFullYear()
+                );
+
+                if (hasAppointment) {
+                    day.classList.add('has-event');
+                }
+
+                day.addEventListener('click', () => {
+                    if (hasAppointment) {
+                        showNotification(`Appointments scheduled for June ${i}, 2025`);
+                    } else {
+                        showNotification(`No appointments scheduled for June ${i}, 2025`);
+                    }
+                });
+
+                calendarDays.appendChild(day);
+            }
+
+            // Add days from next month
+            const totalDaysShown = calendarDays.children.length;
+            const daysToAdd = 42 - totalDaysShown; // 6 rows of 7 days
+
+            for (let i = 1; i <= daysToAdd; i++) {
+                const day = document.createElement('div');
+                day.className = 'day other-month';
+                day.textContent = i;
+                calendarDays.appendChild(day);
+            }
+        }
+
+        // Calendar navigation
+        prevMonthBtn.addEventListener('click', () => {
+            showNotification('Previous month functionality will be implemented soon.');
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            showNotification('Next month functionality will be implemented soon.');
+        });
+
+        // Add medication functionality
+        const addMedicationBtn = document.querySelector('.add-medication button');
+        const addMedicationInput = document.querySelector('.add-medication input');
+        const medicationList = document.querySelector('.medication-list');
+
+        if (addMedicationBtn && addMedicationInput && medicationList) {
+            addMedicationBtn.addEventListener('click', () => {
+                const medicationText = addMedicationInput.value.trim();
+                if (medicationText) {
+                    const parts = medicationText.split(' ');
+                    const medicationName = parts[0];
+                    const medicationDosage = parts.slice(1).join(' ');
+
+                    const medicationItem = document.createElement('div');
+                    medicationItem.className = 'medication-item';
+                    medicationItem.innerHTML = `
+                        <div>
+                            <span class="medication-name">${medicationName}</span>
+                            <span class="medication-dosage">${medicationDosage}</span>
+                        </div>
+                        <div class="medication-actions">
+                            <button type="button"><i class="fas fa-edit"></i></button>
+                            <button type="button"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+
+                    medicationList.appendChild(medicationItem);
+                    addMedicationInput.value = '';
+
+                    // Add event listeners to new buttons
+                    const deleteBtn = medicationItem.querySelector('.fa-trash').parentElement;
+                    deleteBtn.addEventListener('click', () => {
+                        medicationItem.remove();
+                        showNotification(`Removed ${medicationName} from prescription`);
+                    });
+
+                    showNotification(`Added ${medicationName} to prescription`);
+                }
+            });
+
+            // Delete medication functionality
+            document.querySelectorAll('.medication-actions .fa-trash').forEach(icon => {
+                const btn = icon.parentElement;
+                btn.addEventListener('click', () => {
+                    const medicationItem = btn.closest('.medication-item');
+                    const medicationName = medicationItem.querySelector('.medication-name').textContent;
+                    medicationItem.remove();
+                    showNotification(`Removed ${medicationName} from prescription`);
+                });
+            });
+        }
+
+        // Prescription form submission
+        const prescriptionForm = document.querySelector('.prescription-form');
+        if (prescriptionForm) {
+            prescriptionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                showNotification('Prescription created successfully');
+            });
+        }
+
+        // Patient action buttons
+        document.querySelectorAll('.patient-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const action = btn.getAttribute('title');
+                const patientName = btn.closest('.patient-item').querySelector('.patient-name').textContent;
+
+                if (action === 'Video Call') {
+                    videoCallModal.style.display = 'block';
+                    patientNameSpan.textContent = patientName;
+                    showNotification(`Video call started with ${patientName}`);
+                } else if (action === 'Send Message') {
+                    messagesPanel.classList.add('active');
+                    showNotification(`Compose a message to ${patientName}`);
+                } else {
+                    showNotification(`${action} for ${patientName}`);
+                }
+            });
+        });
+
+        // Message items click
+        document.querySelectorAll('.message-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const sender = item.querySelector('.message-sender').textContent;
+                showNotification(`Opening conversation with ${sender}`);
+                item.classList.remove('unread');
+            });
+        });
+
+        // Notification items click
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const title = item.querySelector('.notification-title').textContent;
+                showNotification(`Viewing notification: ${title}`);
+                item.classList.remove('unread');
+            });
+        });
+
+        // Clear all notifications
+        document.querySelector('.clear-all-btn').addEventListener('click', () => {
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.classList.remove('unread');
+            });
+            showNotification('All notifications marked as read');
+        });
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+
+            // Set icon based on type
+            let icon = 'check-circle';
+            if (type === 'error') icon = 'times-circle';
+            if (type === 'warning') icon = 'exclamation-circle';
+            if (type === 'info') icon = 'info-circle';
+
+            notification.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+
+            // Add to DOM
+            document.body.appendChild(notification);
+
+            // Trigger animation
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateY(0)';
+            }, 10);
+
+            // Remove after delay
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set Dashboard as active section by default
+            const dashboardMenuItem = document.querySelector('.menu-item[data-section="dashboard"]');
+            dashboardMenuItem.classList.add('active');
+            document.getElementById('dashboard-section').style.display = 'block';
+
+            // Check if mobile
+            if (window.innerWidth < 768) {
+                sidebar.classList.remove('expanded');
+                mainContent.classList.remove('expanded');
+            }
+
+            // Render calendar
+            renderCalendar();
+
+            // Show welcome notification
+            showNotification('Welcome back, Dr. Johnson! You have 7 appointments today.');
+        });
+prescriptionForm.addEventListener('submit', (e) => {
+    const meds = [];
+    document.querySelectorAll('.medication-item').forEach(item => {
+        meds.push({
+            name: item.querySelector('.medication-name').textContent,
+            dosage: item.querySelector('.medication-dosage').textContent
+        });
+    });
+    document.getElementById('medications_json').value = JSON.stringify(meds);
+    showNotification('Prescription created successfully');
+});
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const openAddPatientModalBtn = document.getElementById('add-patient-btn');
+            const addPatientModal = document.getElementById('add-patient-modal');
+            const closeAddPatientModalBtn = document.getElementById('close-add-patient-modal');
+
+            if (openAddPatientModalBtn) {
+                openAddPatientModalBtn.addEventListener('click', () => {
+                    addPatientModal.style.display = 'block';
+                });
+            }
+            if (closeAddPatientModalBtn) {
+                closeAddPatientModalBtn.addEventListener('click', () => {
+                    addPatientModal.style.display = 'none';
+                });
+            }
+            window.onclick = function (event) {
+                if (event.target === addPatientModal) {
+                    addPatientModal.style.display = "none";
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
